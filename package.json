@@ -1,0 +1,55 @@
+{
+  "name": "web-test-runner-performance",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./index.js",
+  "module": "./index.js",
+  "typings": "./index.d.ts",
+  "type": "module",
+  "files": [
+    "*"
+  ],
+  "scripts": {
+    "ci": "npm run clean && npm run build && npm run test",
+    "start": "web-dev-server --open demo/ --node-resolve --watch",
+    "clean": "del ./dist",
+    "test": "web-test-runner",
+    "test:watch": "web-test-runner -watch",
+    "build": "tsc --project ./tsconfig.lib.json && cpy ./package.json dist/lib/ && cpy ./README.md dist/lib/",
+    "build:watch": "tsc --watch --project ./tsconfig.lib.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coryrylan/web-test-runner-voiceover.git"
+  },
+  "author": "Cory Rylan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coryrylan/web-test-runner-voiceover/issues"
+  },
+  "homepage": "https://github.com/coryrylan/web-test-runner-voiceover#readme",
+  "devDependencies": {
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@types/fs-extra": "^9.0.13",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@rollup/plugin-alias": "^3.1.5",
+    "@rollup/plugin-virtual": "^2.0.3",
+    "@web/dev-server-esbuild": "^0.2.14",
+    "@web/dev-server-rollup": "^0.3.11",
+    "@web/test-runner": "^0.13.18",
+    "@web/test-runner-commands": "^0.5.13",
+    "@web/test-runner-playwright": "^0.8.8",
+    "brotli-size": "^4.0.0",
+    "cpy-cli": "^3.1.1",
+    "del-cli": "^4.0.1",
+    "fs-extra": "^10.0.0",
+    "lit": "^2.0.0",
+    "postcss": "^8.3.9",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-shell": "^1.0.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.3.1"
+  }
+}
