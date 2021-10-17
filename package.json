@@ -1,6 +1,6 @@
 {
   "name": "web-test-runner-performance",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "./index.js",
   "module": "./index.js",
@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coryrylan/web-test-runner-voiceover.git"
+    "url": "git+https://github.com/coryrylan/web-test-runner-performance.git"
   },
   "author": "Cory Rylan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/coryrylan/web-test-runner-voiceover/issues"
+    "url": "https://github.com/coryrylan/web-test-runner-performance/issues"
   },
-  "homepage": "https://github.com/coryrylan/web-test-runner-voiceover#readme",
+  "homepage": "https://github.com/coryrylan/web-test-runner-performance#readme",
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4-fix.0",
     "@types/fs-extra": "^9.0.13",

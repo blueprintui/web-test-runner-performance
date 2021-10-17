@@ -7,6 +7,7 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
   concurrency: 1,
   concurrentBrowsers: 1,
   nodeResolve: true,
+  testsFinishTimeout: 20000,
   files: ['./src/*.performance.ts'],
   browsers: [playwrightLauncher({ product: 'chromium', launchOptions: { headless: false } })],
   plugins: [

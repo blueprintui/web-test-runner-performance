@@ -20,6 +20,7 @@ export default ({
   concurrency: 1,
   concurrentBrowsers: 1,
   nodeResolve: true,
+  testsFinishTimeout: 20000,
   files: ['./src/*.performance.ts'],
   browsers: [playwrightLauncher({ product: 'chromium', launchOptions: { headless: false } })],
   reporters: [
@@ -129,6 +130,7 @@ export default ({
   concurrency: 1,
   concurrentBrowsers: 1,
   nodeResolve: true,
+  testsFinishTimeout: 20000,
   files: ['./src/*.performance.ts'],
   browsers: [playwrightLauncher({ product: 'chromium', launchOptions: { headless: false } })],
     reporters: [
