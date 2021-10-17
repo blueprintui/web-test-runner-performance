@@ -2,7 +2,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import alias from '@rollup/plugin-alias';
 import virtual from '@rollup/plugin-virtual';
-import postcss from 'rollup-plugin-postcss';
+import styles from 'rollup-plugin-styles';
 import * as rollup from 'rollup';
 import * as brotliSize from 'brotli-size';
 import fs from 'fs-extra';
@@ -55,8 +55,8 @@ async function measureBundleSize(session: any, entrypoint: string, bundleConfig:
       input: 'entry',
       external: config.external,
       plugins: [
-        virtual({ entry: entrypoint.includes('import') ? entrypoint : `import '${entrypoint}';` }),
-        postcss({ minimize: true, extract: true }),
+        virtual({ entry: `${entrypoint.includes('import') ? entrypoint : `import '${entrypoint}';`};console.log('entrypoint')` }),
+        styles({ minimize: true, mode: 'extract' }),
         nodeResolve(),
         alias({ entries: config.aliases }),
         terser({ ecma: 2020, output: { comments: false }, compress: { unsafe: true, passes: 2 } }),
