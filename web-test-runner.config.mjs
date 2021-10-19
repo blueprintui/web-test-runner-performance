@@ -7,9 +7,15 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
   concurrency: 1,
   concurrentBrowsers: 1,
   nodeResolve: true,
-  testsFinishTimeout: 20000,
+  testsFinishTimeout: 60000,
+  testFramework: {
+    config: {
+      ui: 'bdd',
+      timeout: '60000',
+    },
+  },
   files: ['./src/*.performance.ts'],
-  browsers: [playwrightLauncher({ product: 'chromium', launchOptions: { headless: false } })],
+  browsers: [playwrightLauncher({ product: 'chromium', launchOptions: { headless: !!process.env.GITHUB_ACTION } })],
   plugins: [
     esbuildPlugin({ ts: true, json: true, target: 'auto', sourceMap: true }),
     renderPerformancePlugin(),
