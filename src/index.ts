@@ -63,7 +63,7 @@ async function measureBundleSize(session: any, entrypoint: string, bundleConfig:
       ],
     },
     outputOptions: {
-      file: `${config.writePath}/${session.id}.${Math.random().toString(36).substr(2, 9)}.bundle.js`,
+      dir: `${config.writePath}/${session.id}.${Math.random().toString(36).substr(2, 9)}`,
       sourcemap: !!config.writePath
     },
   };
