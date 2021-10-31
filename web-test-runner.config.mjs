@@ -21,7 +21,7 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
     renderPerformancePlugin(),
     bundlePerformancePlugin({
       // writePath: `./dist/performance`,
-      aliases:  [{ find: /^test-module$/, replacement: `./test-module` }]
+      aliases:  [{ find: /^demo-module$/, replacement: `./demo-module` }]
     }),
   ],
   reporters: [

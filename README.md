@@ -54,15 +54,15 @@ export default ({
 ```javascript
 // component.performance.js
 import { expect } from '@esm-bundle/chai';
-import { testBundleSize, testRenderTime, html } from '../dist/lib/browser.js';
+import { testBundleSize } from 'web-test-runner-performance/browser.js';
 
 describe('performance', () => {
   it('should meet maximum css bundle size limits (0.2kb brotli)', async () => {
-    expect((await testBundleSize('./test-module/index.css')).kb).to.below(0.2);
+    expect((await testBundleSize('./demo-module/index.css')).kb).to.below(0.2);
   });
 
   it('should meet maximum js bundle size limits (0.78kb brotli)', async () => {
-    expect((await testBundleSize('./test-module/index.js')).kb).to.below(0.8);
+    expect((await testBundleSize('./demo-module/index.js')).kb).to.below(0.8);
   });
 });
 ```
@@ -71,7 +71,7 @@ You can also pass in an alias configuration to alias imports for local packages.
 
 ```javascript
 bundlePerformancePlugin({
-  aliases:  [{ find: /^test-module$/, replacement: `${process.cwd()}/test-module` }]
+  aliases:  [{ find: /^demo-module$/, replacement: `${process.cwd()}/demo-module` }]
 })
 ```
 
@@ -98,7 +98,7 @@ Once the plugin is added a test can be written to check how quick an element can
 ```javascript
 // component.performance.js
 import { expect } from '@esm-bundle/chai';
-import { testBundleSize, testRenderTime, html } from '../dist/lib/browser.js';
+import { testBundleSize, testRenderTime, html } from 'web-test-runner-performance/browser.js';
 
 describe('performance', () => {
   it(`should meet maximum render time 1000 <p> below 50ms`, async () => {
@@ -124,7 +124,7 @@ results to a json file.
 import { playwrightLauncher } from '@web/test-runner-playwright';
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { defaultReporter } from '@web/test-runner';
-import { bundlePerformancePlugin, renderPerformancePlugin, performanceReporter } from './dist/lib/index.js';
+import { bundlePerformancePlugin, renderPerformancePlugin, performanceReporter } from 'web-test-runner-performance';
 
 export default ({
   concurrency: 1,
@@ -168,3 +168,5 @@ export default ({
   ]
 }
 ```
+
+Learn more about getting started here https://coryrylan.com/blog/testing-web-performance-with-web-test-runner
