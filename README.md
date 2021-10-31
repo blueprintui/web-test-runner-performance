@@ -1,5 +1,7 @@
 # Web Test Runner Performance
 
+[![npm version](https://badge.fury.io/js/web-test-runner-performance.svg)](https://badge.fury.io/js/web-test-runner-performance) ![CI Build](https://github.com/coryrylan/web-test-runner-performance/actions/workflows/build.yml/badge.svg)
+
 The Web Test Runner Performance provides plugins for [web-test-runner](https://modern-web.dev/docs/test-runner/overview/) to measure UI performance as well as a custom reporter for logging results. The package provides three plugins for your `web-test-runner` configuration.
 
 - `bundlePerformancePlugin`: measure bundle/package size output
