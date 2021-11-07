@@ -20,6 +20,7 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
     esbuildPlugin({ ts: true, json: true, target: 'auto', sourceMap: true }),
     renderPerformancePlugin(),
     bundlePerformancePlugin({
+      // optimize: false,
       // writePath: `./dist/performance`,
       aliases:  [{ find: /^demo-module$/, replacement: `./demo-module` }]
     }),

@@ -3,8 +3,8 @@ import { TemplateResult, render, html } from 'lit';
 
 export { html } from 'lit';
 
-export async function testBundleSize(bundle: string) {
-  return await executeServerCommand<any, any>('performance:bundle', { bundle });
+export async function testBundleSize(bundle: string, config: { optimize?: boolean, external?: (string | RegExp)[] } = { }) {
+  return await executeServerCommand<any, any>('performance:bundle', { bundle, config });
 }
 
 export async function testRenderTime(template: TemplateResult<1>, config: { iterations?: number, average?: number } = { }) {

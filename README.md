@@ -77,6 +77,23 @@ bundlePerformancePlugin({
 })
 ```
 
+By default bundle test will minify CSS and JavaScript. If your build/assets are already
+minified you can disable this option to improve test speed.
+
+```javascript
+bundlePerformancePlugin({
+  optimize: false
+}),
+```
+
+Both `optimize` and `external` can be customized at a test level to override the global settings.
+
+```javascript
+it('should meet maximum js bundle size limits (0.78kb brotli)', async () => {
+  expect((await testBundleSize('./demo-module/index.js', { optimize: false, external: [] })).kb).to.below(0.8);
+});
+```
+
 ## Render Performance
 
 The `renderPerformancePlugin` will measure the render time of a given custom element in milliseconds.

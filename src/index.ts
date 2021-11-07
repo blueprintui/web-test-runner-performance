@@ -17,14 +17,15 @@ const store = {
 export interface BundleConfig {
   writePath?: string;
   external?: (string | RegExp)[];
-  aliases?: { find: string | RegExp; replacement: string; }[]
+  aliases?: { find: string | RegExp; replacement: string; }[],
+  optimize?: boolean
 }
 
 export function bundlePerformancePlugin(config) {
   return {
     name: 'bundle-performance-plugin',
     async executeCommand({ command, payload, session }) {
-      return command === 'performance:bundle' ? await measureBundleSize(session, payload.bundle, config) : null;
+      return command === 'performance:bundle' ? await measureBundleSize(session, payload.bundle, { ...config, ...payload.config }) : null;
     }
   }
 }
@@ -48,18 +49,18 @@ export function performanceReporter(config: { writePath: string }) {
   };
 }
 
-async function measureBundleSize(session: any, entrypoint: string, bundleConfig: BundleConfig = {}) {
-  const config: BundleConfig = { writePath: null, external: [], aliases: [], ...bundleConfig };
+async function measureBundleSize(session: any, entrypoint: string, bundleConfig: BundleConfig = { }) {
+  const config: BundleConfig = { writePath: null, optimize: true, external: [], aliases: [], ...bundleConfig };
   const rollupConfig = {
     inputOptions: {
       input: 'entry',
       external: config.external,
       plugins: [
         virtual({ entry: `${entrypoint.includes('import') ? entrypoint : `import '${entrypoint}';`};console.log('entrypoint')` }),
-        styles({ minimize: true, mode: 'extract' }),
+        styles({ minimize: config.optimize, mode: 'extract' }),
         nodeResolve(),
         alias({ entries: config.aliases }),
-        terser({ ecma: 2020, output: { comments: false }, compress: { unsafe: true, passes: 2 } }),
+        config.optimize ? terser({ ecma: 2020, output: { comments: false }, compress: { unsafe: true, passes: 2 } }) : [],
       ],
     },
     outputOptions: {
