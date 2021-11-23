@@ -1,7 +1,7 @@
 import { playwrightLauncher } from '@web/test-runner-playwright';
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { defaultReporter } from '@web/test-runner';
-import { bundlePerformancePlugin, renderPerformancePlugin, performanceReporter } from './dist/lib/index.js';
+import { bundlePerformancePlugin, renderPerformancePlugin, performanceReporter, filesizePerformancePlugin } from './dist/lib/index.js';
 
 export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
   concurrency: 1,
@@ -24,6 +24,7 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
       // writePath: `./dist/performance`,
       aliases:  [{ find: /^demo-module$/, replacement: `./demo-module` }]
     }),
+    filesizePerformancePlugin(),
   ],
   reporters: [
     defaultReporter({ reportTestResults: true, reportTestProgress: true }),

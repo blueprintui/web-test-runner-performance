@@ -7,6 +7,10 @@ export async function testBundleSize(bundle: string, config: { optimize?: boolea
   return await executeServerCommand<any, any>('performance:bundle', { bundle, config });
 }
 
+export async function testFileSize(filepath) {
+  return await executeServerCommand<any, any>('performance:filesize', { filepath } )
+}
+
 export async function testRenderTime(template: TemplateResult<1>, config: { iterations?: number, average?: number } = { }) {
   const conf = { iterations: 1, average: 3, ...config };
   let averages = [];

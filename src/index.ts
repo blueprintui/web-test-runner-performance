@@ -39,6 +39,15 @@ export function renderPerformancePlugin() {
   }
 }
 
+export function filesizePerformancePlugin() {
+  return {
+    name: 'filesize-performance-plugin',
+    async executeCommand({ command, payload, session }) {
+      return command === 'performance:filesize' ? await measureFileSize(session, payload.filepath) : null
+    }
+  }
+}
+
 export function performanceReporter(config: { writePath: string }) {
   return {
     stop() {
@@ -49,8 +58,29 @@ export function performanceReporter(config: { writePath: string }) {
   };
 }
 
+
+/**
+ * Measure the file size without any additional transformation suitable for testing already minified files
+ * or compare them before any additional work is done on them.
+ */
+async function measureFileSize(session: any, filepath: string): Promise<{ kb: Number }>  {
+  const { size } = fs.statSync(filepath)
+
+  /**
+   * Update report
+   */
+  store.bundleSizes.push({
+    kb: size,
+    testFile: session.testFile.replace(session.browser.config.rootDir, ''),
+    compression: 'uncompressed',
+    entrypoint: filepath
+  });
+
+  return { kb: size };
+}
+
 async function measureBundleSize(session: any, entrypoint: string, bundleConfig: BundleConfig = { }) {
-  const config: BundleConfig = { writePath: null, optimize: true, external: [], aliases: [], ...bundleConfig };
+  const config: BundleConfig = { writePath: null, optimize: false, external: [], aliases: [], ...bundleConfig };
   const rollupConfig = {
     inputOptions: {
       input: 'entry',

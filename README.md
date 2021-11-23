@@ -7,6 +7,7 @@ The Web Test Runner Performance provides plugins for [web-test-runner](https://m
 - `bundlePerformancePlugin`: measure bundle/package size output
 - `renderPerformancePlugin`: measure component render performance
 - `performanceReporter`: for writting performance results to disk
+- `performanceFilesize`: measure filesize without any additional transformation (Good for: Stylesheets, Images, Minified files)
 
 ## Setup
 
@@ -91,6 +92,14 @@ Both `optimize` and `external` can be customized at a test level to override the
 ```javascript
 it('should meet maximum js bundle size limits (0.78kb brotli)', async () => {
   expect((await testBundleSize('./demo-module/index.js', { optimize: false, external: [] })).kb).to.below(0.8);
+});
+```
+
+Use of `testFileSize` to compare files that are already minified or don't require additional transformation.
+
+```javascript
+it('should have sixe of (47kb uncompressed)', async () => {
+  expect((await testFileSize('./demo-module/index.js')).kb).to.equal(47);
 });
 ```
 
