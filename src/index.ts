@@ -1,5 +1,5 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import alias from '@rollup/plugin-alias';
 import virtual from '@rollup/plugin-virtual';
 import styles from 'rollup-plugin-styles';
