@@ -122,7 +122,7 @@ import { testBundleSize, testRenderTime, html } from 'web-test-runner-performanc
 describe('performance', () => {
   it(`should meet maximum render time 1000 <p> below 50ms`, async () => {
     const result = await testRenderTime(html`<my-element>hello world</my-element>`, { iterations: 1000, average: 10 });
-    expect(result.averages.length).to.eql(10);
+    expect(result.average.length).to.eql(10);
     expect(result.duration).to.below(50);
   });
 });
