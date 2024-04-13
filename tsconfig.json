@@ -23,6 +23,7 @@
     "importHelpers": true,
     "rootDir": "./src",
     "baseUrl": "./",
+    "skipLibCheck": true,
     "paths": {
       "web-test-runner-performance": ["./dist/lib"],
       "web-test-runner-performance/*": ["./dist/lib/*"]
