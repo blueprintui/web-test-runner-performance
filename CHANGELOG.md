@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.0
+- feat: improved test performance with rolldown and typescript 6 integrations
+
 ## 0.1.6
 - fix: dependency updates
 

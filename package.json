@@ -1,19 +1,33 @@
 {
   "name": "web-test-runner-performance",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "",
-  "main": "./index.js",
-  "module": "./index.js",
-  "typings": "./index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./browser.js": {
+      "types": "./dist/browser.d.ts",
+      "default": "./dist/browser.js"
+    }
+  },
   "files": [
-    "*"
+    "dist",
+    "LICENSE.md",
+    "README.md",
+    "llms.txt"
   ],
   "scripts": {
-    "ci": "npm run clean && npm run build && npm run test",
+    "ci": "pnpm clean && pnpm build && pnpm test:integration && pnpm test",
     "clean": "del ./dist",
     "test": "web-test-runner",
-    "build": "tsc --project ./tsconfig.lib.json && cpy ./package.json dist/lib/ && cpy ./README.md dist/lib/ && cpy ./LICENSE.md dist/lib/",
+    "test:integration": "node --test src/**/*.spec.ts",
+    "build": "tsc --project ./tsconfig.lib.json",
     "build:watch": "tsc --watch --project ./tsconfig.lib.json"
   },
   "repository": {
@@ -27,31 +41,35 @@
   },
   "homepage": "https://github.com/coryrylan/web-test-runner-performance#readme",
   "devDependencies": {
-    "@esm-bundle/chai": "^4.3.4-fix.0",
-    "@types/fs-extra": "^11.0.4",
-    "typescript": "^5.4.5"
+    "@types/fs-extra": "11.0.4",
+    "@types/jasmine": "6.0.0",
+    "@web/dev-server-esbuild": "1.0.5",
+    "@web/test-runner": "0.20.2",
+    "@web/test-runner-core": "0.13.4",
+    "@web/test-runner-playwright": "0.11.1",
+    "cpy-cli": "7.0.0",
+    "del-cli": "7.0.0",
+    "playwright": "1.58.2",
+    "typescript": "6.0.0-beta",
+    "web-test-runner-jasmine": "0.2.0"
   },
-  "overrides": {
-    "rollup-plugin-styles": {
-      "cssnano": "6.1.2"
-    }
+  "pnpm": {
+    "overrides": {
+      "rollup-plugin-styles>cssnano": "6.1.2"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "dependencies": {
-    "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-virtual": "^3.0.2",
-    "@web/dev-server-esbuild": "^1.0.2",
-    "@web/dev-server-rollup": "^0.6.1",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@web/test-runner": "^0.18.1",
-    "@web/test-runner-commands": "^0.9.0",
-    "@web/test-runner-playwright": "^0.11.0",
+    "@rollup/plugin-virtual": "3.0.2",
+    "@web/test-runner-commands": "0.9.0",
     "brotli-size": "^4.0.0",
-    "cpy-cli": "^5.0.0",
-    "del-cli": "^5.1.0",
-    "fs-extra": "^11.2.0",
-    "lit": "^3.1.2",
-    "rollup-plugin-shell": "^1.0.9",
-    "rollup-plugin-styles": "^4.0.0",
-    "tslib": "^2.6.2"
-  }
+    "fs-extra": "11.3.3",
+    "lit": "3.3.2",
+    "rolldown": "^1.0.0-rc.4",
+    "rollup-plugin-styles": "4.0.0",
+    "tslib": "2.8.1"
+  },
+  "packageManager": "pnpm@10.29.3+sha512.498e1fb4cca5aa06c1dcf2611e6fafc50972ffe7189998c409e90de74566444298ffe43e6cd2acdc775ba1aa7cc5e092a8b7054c811ba8c5770f84693d33d2dc"
 }
