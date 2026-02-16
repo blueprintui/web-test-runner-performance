@@ -1,17 +1,18 @@
 import { playwrightLauncher } from '@web/test-runner-playwright';
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { defaultReporter } from '@web/test-runner';
-import { bundlePerformancePlugin, renderPerformancePlugin, performanceReporter } from './dist/lib/index.js';
+import { jasmineTestRunnerConfig } from 'web-test-runner-jasmine';
+import { bundlePerformancePlugin, renderPerformancePlugin, performanceReporter } from './dist/index.js';
 
 export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
+  ...jasmineTestRunnerConfig(),
   concurrency: 1,
   concurrentBrowsers: 1,
   nodeResolve: true,
   testsFinishTimeout: 60000,
   testFramework: {
     config: {
-      ui: 'bdd',
-      timeout: '60000',
+      defaultTimeoutInterval: 60000,
     },
   },
   files: ['./src/*.performance.ts'],

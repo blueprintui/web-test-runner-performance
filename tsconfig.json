@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "es2022",
     "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["es2020", "dom"],
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom"],
     "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -22,11 +22,11 @@
     "inlineSourceMap": false,
     "importHelpers": true,
     "rootDir": "./src",
-    "baseUrl": "./",
     "skipLibCheck": true,
+    "types": ["jasmine"],
     "paths": {
-      "web-test-runner-performance": ["./dist/lib"],
-      "web-test-runner-performance/*": ["./dist/lib/*"]
+      "web-test-runner-performance": ["./dist"],
+      "web-test-runner-performance/*": ["./dist/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],

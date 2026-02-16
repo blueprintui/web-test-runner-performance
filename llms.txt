@@ -1,0 +1,67 @@
+# web-test-runner-performance
+
+Performance testing plugins for Web Test Runner. Measures JS/CSS bundle sizes (Brotli-compressed) and UI component render times in milliseconds.
+
+## Entry Points
+
+### `web-test-runner-performance` (server-side, used in web-test-runner config)
+
+- `bundlePerformancePlugin(config?)`: Plugin that measures bundle sizes using rolldown with Brotli compression.
+  - `config.optimize?: boolean` (default: true) — enable rolldown minification and CSS minimization
+  - `config.external?: (string | RegExp)[]` — dependencies to exclude from the bundle
+  - `config.aliases?: { find: string | RegExp; replacement: string }[]` — resolve aliases for local packages
+  - `config.writePath?: string` — directory to write bundle output for inspection
+
+- `renderPerformancePlugin()`: Plugin that measures UI component render performance.
+
+- `performanceReporter(config)`: Reporter that writes results to a JSON file.
+  - `config.writePath: string` — directory for `report.json` output
+
+### `web-test-runner-performance/browser.js` (browser-side, used in test files)
+
+- `testBundleSize(bundle: string, config?): Promise<{ kb: number }>` — triggers server-side bundle measurement.
+  - `bundle`: path to JS/CSS entry point (e.g. `'./src/index.js'`)
+  - `config.optimize?: boolean` — override global optimize setting
+  - `config.external?: (string | RegExp)[]` — override global externals
+
+- `testRenderTime(template: TemplateResult, config?): Promise<{ duration: number }>` — measures render time of a lit html template.
+  - `config.iterations?: number` (default: 1) — number of template copies per render pass
+  - `config.average?: number` (default: 3) — number of render passes to average
+
+- `html` — re-exported lit `html` template tag, used with `testRenderTime`
+
+## Minimal Example
+
+```javascript
+// web-test-runner.performance.mjs
+import { bundlePerformancePlugin, renderPerformancePlugin, performanceReporter } from 'web-test-runner-performance';
+
+export default ({
+  concurrency: 1,
+  concurrentBrowsers: 1,
+  nodeResolve: true,
+  files: ['./src/*.performance.ts'],
+  plugins: [bundlePerformancePlugin(), renderPerformancePlugin()],
+  reporters: [performanceReporter({ writePath: './dist/performance' })],
+});
+```
+
+```javascript
+// example.performance.ts (runs in browser via Web Test Runner)
+import { testBundleSize, testRenderTime, html } from 'web-test-runner-performance/browser.js';
+
+// Bundle size test — returns { kb: number } after Brotli compression
+const bundle = await testBundleSize('./src/index.js');
+console.log(bundle.kb); // e.g. 0.78
+
+// Render time test — returns { duration: number } in milliseconds
+const render = await testRenderTime(html`<my-element></my-element>`, { iterations: 100, average: 5 });
+console.log(render.duration); // e.g. 12.5
+```
+
+## Constraints
+
+- Performance tests must use `concurrency: 1` and `concurrentBrowsers: 1` for accurate measurements.
+- Browser test files communicate with server plugins via `@web/test-runner-commands` (`executeServerCommand`). Both a server plugin and the browser API are required.
+- Bundle sizes are reported in KB after Brotli compression.
+- Render measurement uses `ResizeObserver` to detect first paint, so templates must produce visible output.

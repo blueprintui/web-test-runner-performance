@@ -1,11 +1,9 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import terser from '@rollup/plugin-terser';
-import alias from '@rollup/plugin-alias';
 import virtual from '@rollup/plugin-virtual';
 import styles from 'rollup-plugin-styles';
-import * as rollup from 'rollup';
+import { rolldown } from 'rolldown';
 import * as brotliSize from 'brotli-size';
 import fs from 'fs-extra';
+import path from 'node:path';
 
 const { ensureFileSync } = fs;
 
@@ -51,32 +49,48 @@ export function performanceReporter(config: { writePath: string }) {
 
 async function measureBundleSize(session: any, entrypoint: string, bundleConfig: BundleConfig = { }) {
   const config: BundleConfig = { writePath: null, optimize: true, external: [], aliases: [], ...bundleConfig };
-  const rollupConfig = {
+
+  function aliasPlugin(aliases: BundleConfig['aliases']) {
+    return {
+      name: 'performance-alias',
+      resolveId(source: string) {
+        for (const entry of aliases) {
+          const pattern = typeof entry.find === 'string' ? entry.find : entry.find.source.replace(/^\^/, '').replace(/\$$/, '');
+          if (source === pattern || source.startsWith(pattern + '/')) {
+            const resolved = source.replace(pattern, entry.replacement);
+            return path.resolve(resolved);
+          }
+        }
+        return null;
+      }
+    };
+  }
+
+  const rolldownConfig = {
     inputOptions: {
       input: 'entry',
       external: config.external,
       plugins: [
         virtual({ entry: `${entrypoint.includes('import') ? entrypoint : `import '${entrypoint}';`};console.log('entrypoint')` }),
         styles({ minimize: config.optimize, mode: 'extract' }),
-        nodeResolve(),
-        alias({ entries: config.aliases }),
-        config.optimize ? terser({ ecma: 2020, output: { comments: false }, compress: { unsafe: true, passes: 2 } }) : [],
+        aliasPlugin(config.aliases),
       ],
     },
     outputOptions: {
       dir: `${config.writePath}/${session.id}.${Math.random().toString(36).substr(2, 9)}`,
-      sourcemap: !!config.writePath
+      sourcemap: !!config.writePath,
+      minify: config.optimize,
     },
   };
 
-  const bundle = await rollup.rollup(rollupConfig.inputOptions);
-  const { output } = await bundle.generate(rollupConfig.outputOptions);
+  const bundle = await rolldown(rolldownConfig.inputOptions);
+  const { output } = await bundle.generate(rolldownConfig.outputOptions);
   const code = output[0].code; // js
   const source = (output[1] as any)?.source; // css extraction if available
   const kb = brotliSize.sync(source ?? code) / 1000;
 
   if (!!config.writePath) {
-    await bundle.write(rollupConfig.outputOptions);
+    await bundle.write(rolldownConfig.outputOptions);
   }
 
   await bundle.close();
