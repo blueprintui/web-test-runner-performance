@@ -1,6 +1,6 @@
 {
   "name": "web-test-runner-performance",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -18,7 +18,7 @@
   },
   "files": [
     "dist",
-    "LICENSE.md",
+    "LICENSE",
     "README.md",
     "llms.txt"
   ],

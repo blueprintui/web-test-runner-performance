@@ -13,4 +13,11 @@ describe('performance', () => {
     const result = await testRenderTime(html`<p>hello world</p>`, { iterations: 1000, average: 10 });
     expect(result.duration).toBeLessThan(50);
   });
+
+  it('should use default iterations and average when not specified', async () => {
+    const result = await testRenderTime(html`<p>default config</p>`);
+    expect(result.iterations).toBe(1);
+    expect(result.average).toBe(3);
+    expect(result.duration).toBeGreaterThan(0);
+  });
 });
