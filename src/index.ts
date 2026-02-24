@@ -19,7 +19,7 @@ export interface BundleConfig {
   optimize?: boolean
 }
 
-export function bundlePerformancePlugin(config) {
+export function bundlePerformancePlugin(config: BundleConfig) {
   return {
     name: 'bundle-performance-plugin',
     async executeCommand({ command, payload, session }) {
@@ -40,9 +40,11 @@ export function renderPerformancePlugin() {
 export function performanceReporter(config: { writePath: string }) {
   return {
     stop() {
-      const path = `${config.writePath}/report.json`;
-      ensureFileSync(path);
-      fs.writeJsonSync(path, store, { spaces: 2 });
+      const reportPath = path.join(config.writePath, 'report.json');
+      ensureFileSync(reportPath);
+      fs.writeJsonSync(reportPath, store, { spaces: 2 });
+      store.renderTimes = [];
+      store.bundleSizes = [];
     }
   };
 }
@@ -84,16 +86,21 @@ async function measureBundleSize(session: any, entrypoint: string, bundleConfig:
   };
 
   const bundle = await rolldown(rolldownConfig.inputOptions);
-  const { output } = await bundle.generate(rolldownConfig.outputOptions);
-  const code = output[0].code; // js
-  const source = (output[1] as any)?.source; // css extraction if available
-  const kb = brotliSize.sync(source ?? code) / 1000;
+  let kb: number;
 
-  if (!!config.writePath) {
-    await bundle.write(rolldownConfig.outputOptions);
+  try {
+    const { output } = await bundle.generate(rolldownConfig.outputOptions);
+    const code = output[0].code; // js
+    const cssAsset = output[1] && 'source' in output[1] ? output[1] : undefined; // css extraction if available
+    const content = cssAsset ? String(cssAsset.source) : code;
+    kb = brotliSize.sync(content) / 1000;
+
+    if (config.writePath) {
+      await bundle.write(rolldownConfig.outputOptions);
+    }
+  } finally {
+    await bundle.close();
   }
-
-  await bundle.close();
 
   store.bundleSizes.push({
     kb,
@@ -105,13 +112,13 @@ async function measureBundleSize(session: any, entrypoint: string, bundleConfig:
   return { kb };
 }
 
-function measureRenderTime(session, payload) {
+function measureRenderTime(session: { testFile: string; browser: { config: { rootDir: string } } }, payload: { duration: number; average: number; iterations: number }) {
   const testFile = session.testFile.replace(session.browser.config.rootDir, '')
   store.renderTimes.push({
     testFile,
     duration: payload.duration,
-    average: payload.averages,
+    average: payload.average,
     iterations: payload.iterations,
   });
-  return new Promise(r => r('reported'));
+  return Promise.resolve('reported');
 }
