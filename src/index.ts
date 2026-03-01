@@ -1,6 +1,6 @@
 import virtual from '@rollup/plugin-virtual';
-import styles from 'rollup-plugin-styles';
 import { rolldown } from 'rolldown';
+import { transform as cssTransform } from 'lightningcss';
 import * as brotliSize from 'brotli-size';
 import fs from 'fs-extra';
 import path from 'node:path';
@@ -51,6 +51,7 @@ export function performanceReporter(config: { writePath: string }) {
 
 async function measureBundleSize(session: any, entrypoint: string, bundleConfig: BundleConfig = { }) {
   const config: BundleConfig = { writePath: null, optimize: true, external: [], aliases: [], ...bundleConfig };
+  let collectedCss = '';
 
   function aliasPlugin(aliases: BundleConfig['aliases']) {
     return {
@@ -68,13 +69,30 @@ async function measureBundleSize(session: any, entrypoint: string, bundleConfig:
     };
   }
 
+  function cssExtractPlugin() {
+    return {
+      name: 'performance-css-extract',
+      load(id: string) {
+        if (id.endsWith('.css')) {
+          let css = fs.readFileSync(id, 'utf-8');
+          if (config.optimize) {
+            css = cssTransform({ filename: id, code: new TextEncoder().encode(css), minify: true }).code.toString();
+          }
+          collectedCss += css;
+          return { code: 'export default ""', moduleType: 'js' };
+        }
+        return null;
+      }
+    };
+  }
+
   const rolldownConfig = {
     inputOptions: {
       input: 'entry',
       external: config.external,
       plugins: [
         virtual({ entry: `${entrypoint.includes('import') ? entrypoint : `import '${entrypoint}';`};console.log('entrypoint')` }),
-        styles({ minimize: config.optimize, mode: 'extract' }),
+        cssExtractPlugin(),
         aliasPlugin(config.aliases),
       ],
     },
@@ -90,9 +108,7 @@ async function measureBundleSize(session: any, entrypoint: string, bundleConfig:
 
   try {
     const { output } = await bundle.generate(rolldownConfig.outputOptions);
-    const code = output[0].code; // js
-    const cssAsset = output[1] && 'source' in output[1] ? output[1] : undefined; // css extraction if available
-    const content = cssAsset ? String(cssAsset.source) : code;
+    const content = collectedCss.trim() || output[0].code;
     kb = brotliSize.sync(content) / 1000;
 
     if (config.writePath) {

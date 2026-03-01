@@ -1,6 +1,6 @@
 {
   "name": "web-test-runner-performance",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -54,9 +54,6 @@
     "web-test-runner-jasmine": "0.2.0"
   },
   "pnpm": {
-    "overrides": {
-      "rollup-plugin-styles>cssnano": "6.1.2"
-    },
     "onlyBuiltDependencies": [
       "esbuild"
     ]
@@ -64,11 +61,11 @@
   "dependencies": {
     "@rollup/plugin-virtual": "3.0.2",
     "@web/test-runner-commands": "0.9.0",
-    "brotli-size": "^4.0.0",
+    "brotli-size": "4.0.0",
     "fs-extra": "11.3.3",
+    "lightningcss": "1.31.1",
     "lit": "3.3.2",
-    "rolldown": "^1.0.0-rc.4",
-    "rollup-plugin-styles": "4.0.0",
+    "rolldown": "1.0.0-rc.6",
     "tslib": "2.8.1"
   },
   "packageManager": "pnpm@10.29.3+sha512.498e1fb4cca5aa06c1dcf2611e6fafc50972ffe7189998c409e90de74566444298ffe43e6cd2acdc775ba1aa7cc5e092a8b7054c811ba8c5770f84693d33d2dc"
